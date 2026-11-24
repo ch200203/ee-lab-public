@@ -1,0 +1,32 @@
+name: ai-review
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+permissions: {}
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - env:
+          PRS: ${{ toJSON(github.event.workflow_run.pull_requests) }}
+          WR_HEAD: ${{ github.event.workflow_run.head_sha }}
+          WR_ID: ${{ github.event.workflow_run.id }}
+          WR_EVENT: ${{ github.event.workflow_run.event }}
+          WR_ACTOR: ${{ github.event.workflow_run.actor.login }}
+          WR_TRIGGER: ${{ github.event.workflow_run.triggering_actor.login }}
+        run: |
+          echo "DEF=base REF=$GITHUB_REF SHA=$GITHUB_SHA ACTOR=$GITHUB_ACTOR"
+          echo "WR id=$WR_ID event=$WR_EVENT head=$WR_HEAD actor=$WR_ACTOR trigger=$WR_TRIGGER"
+          echo "PRS=$(echo "$PRS" | jq -c .)"
+  env-main-only:
+    runs-on: ubuntu-latest
+    environment: ee-branch-only
+    permissions:
+      contents: read
+    steps:
+      - env:
+          D: ${{ secrets.ENV_DUMMY }}
+        run: echo "DEF=base ENV_MAIN_ONLY_LEN=${#D} REF=$GITHUB_REF"

@@ -1,0 +1,12 @@
+name: ci
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions: {}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - run: echo "CI head=${{ github.event.pull_request.head.sha }} base=${{ github.event.pull_request.base.sha }}"
