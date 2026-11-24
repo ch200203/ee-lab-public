@@ -1,0 +1,24 @@
+name: env-probe
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions: {}
+jobs:
+  reviewers-env:
+    runs-on: ubuntu-latest
+    environment: ee-ai-review
+    permissions:
+      contents: read
+    steps:
+      - env:
+          D: ${{ secrets.ENV_DUMMY }}
+        run: echo "DEF=base REVIEWERS_ENV_LEN=${#D}"
+  branch-env:
+    runs-on: ubuntu-latest
+    environment: ee-branch-only
+    permissions:
+      contents: read
+    steps:
+      - env:
+          D: ${{ secrets.ENV_DUMMY }}
+        run: echo "DEF=base BRANCH_ENV_LEN=${#D} REF=$GITHUB_REF HEAD_REF=$GITHUB_HEAD_REF"
