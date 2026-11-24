@@ -18,7 +18,7 @@ jobs:
           WR_ACTOR: ${{ github.event.workflow_run.actor.login }}
           WR_TRIGGER: ${{ github.event.workflow_run.triggering_actor.login }}
         run: |
-          echo "DEF=base REF=$GITHUB_REF SHA=$GITHUB_SHA ACTOR=$GITHUB_ACTOR"
+          echo "DEF=head REF=$GITHUB_REF SHA=$GITHUB_SHA ACTOR=$GITHUB_ACTOR"
           echo "WR id=$WR_ID event=$WR_EVENT head=$WR_HEAD actor=$WR_ACTOR trigger=$WR_TRIGGER"
           echo "PRS=$(echo "$PRS" | jq -c .)"
   env-main-only:
@@ -29,6 +29,9 @@ jobs:
     steps:
       - env:
           D: ${{ secrets.ENV_DUMMY }}
+<<<<<<< HEAD
+        run: echo "DEF=head ENV_MAIN_ONLY_LEN=${#D} REF=$GITHUB_REF"
+=======
         run: echo "DEF=base ENV_MAIN_ONLY_LEN=${#D} REF=$GITHUB_REF"
   post:
     runs-on: ubuntu-latest
@@ -44,3 +47,4 @@ jobs:
         run: |
           echo "WR_CREATED=$WR_CREATED"
           gh api -X POST "repos/$GITHUB_REPOSITORY/pulls/$PR/comments" -f body=$'<!-- ee-review rule=TEST-01 severity=should -->\nworkflow_run post probe' -f commit_id="$HEAD" -f path=probe.txt -F line=1 -f side=RIGHT --jq '{id,login:.user.login,uid:.user.id,type:.user.type,commit:.commit_id[0:7]}'
+>>>>>>> main
