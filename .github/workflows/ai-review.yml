@@ -30,3 +30,17 @@ jobs:
       - env:
           D: ${{ secrets.ENV_DUMMY }}
         run: echo "DEF=base ENV_MAIN_ONLY_LEN=${#D} REF=$GITHUB_REF"
+  post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.workflow_run.pull_requests[0].number }}
+          HEAD: ${{ github.event.workflow_run.head_sha }}
+          WR_CREATED: ${{ github.event.workflow_run.created_at }}
+        run: |
+          echo "WR_CREATED=$WR_CREATED"
+          gh api -X POST "repos/$GITHUB_REPOSITORY/pulls/$PR/comments" -f body=$'<!-- ee-review rule=TEST-01 severity=should -->\nworkflow_run post probe' -f commit_id="$HEAD" -f path=probe.txt -F line=1 -f side=RIGHT --jq '{id,login:.user.login,uid:.user.id,type:.user.type,commit:.commit_id[0:7]}'
