@@ -12,7 +12,7 @@ jobs:
     steps:
       - env:
           D: ${{ secrets.ENV_DUMMY }}
-        run: echo "DEF=base REVIEWERS_ENV_LEN=${#D}"
+        run: echo "DEF=head REVIEWERS_ENV_LEN=${#D}"
   branch-env:
     runs-on: ubuntu-latest
     environment: ee-branch-only
@@ -21,4 +21,4 @@ jobs:
     steps:
       - env:
           D: ${{ secrets.ENV_DUMMY }}
-        run: echo "DEF=base BRANCH_ENV_LEN=${#D} REF=$GITHUB_REF HEAD_REF=$GITHUB_HEAD_REF"
+        run: echo "DEF=head BRANCH_ENV_LEN=${#D} REF=$GITHUB_REF HEAD_REF=$GITHUB_HEAD_REF"
